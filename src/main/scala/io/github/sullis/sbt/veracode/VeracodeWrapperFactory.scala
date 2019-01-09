@@ -5,7 +5,7 @@ import com.veracode.apiwrapper.wrappers.ResultsAPIWrapper
 import com.veracode.apiwrapper.wrappers.SandboxAPIWrapper
 import com.veracode.apiwrapper.wrappers.UploadAPIWrapper
 
-class VeracodeWrapperFactory(credentials: Either[UserCredentials, ApiCredentials]) {
+class VeracodeWrapperFactory(credentials: ApiCredentials) {
 
   import CredentialsUtil.setCredentials
 
@@ -22,16 +22,11 @@ class VeracodeWrapperFactory(credentials: Either[UserCredentials, ApiCredentials
   }
 }
 
-case class UserCredentials(username: String, password: String)
-
-case class ApiCredentials(key: String, id: String)
+case class ApiCredentials(apiId: String, apiKey: String)
 
 object CredentialsUtil {
-  def setCredentials[W <: AbstractAPIWrapper](credentials: Either[UserCredentials, ApiCredentials], wrapper: W): W = {
-    credentials match {
-      case Left(uc) => wrapper.setUpCredentials(uc.username, uc.password)
-      case Right(ac) => wrapper.setUpApiCredentials(ac.key, ac.id)
-    }
+  def setCredentials[W <: AbstractAPIWrapper](credentials: ApiCredentials, wrapper: W): W = {
+    wrapper.setUpApiCredentials(credentials.apiId, credentials.apiKey)
     wrapper
   }
 
