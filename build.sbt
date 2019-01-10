@@ -31,4 +31,10 @@ bintrayRepository := "sbt-plugin-releases"
 
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
-libraryDependencies += "com.veracode.vosp.api.wrappers" % "vosp-api-wrappers-java" % "18.12.5.5"
+val awsSdkVersion = "2.2.0"
+
+libraryDependencies ++= Seq(
+  "com.veracode.vosp.api.wrappers" % "vosp-api-wrappers-java" % "18.12.5.5",
+  "software.amazon.awssdk" % "kms" % awsSdkVersion,
+  "org.scalatest" %% "scalatest" % "3.0.5" % Test
+)
