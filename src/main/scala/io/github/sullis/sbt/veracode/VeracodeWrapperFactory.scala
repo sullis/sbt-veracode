@@ -29,6 +29,7 @@ case class ApiCredentials(apiId: String, apiKey: String) {
 
 object CredentialsUtil {
   def setCredentials[W <: AbstractAPIWrapper](credentials: ApiCredentials, wrapper: W): W = {
+    wrapper.setUpCredentials(null, null)
     wrapper.setUpApiCredentials(credentials.apiId, credentials.apiKey)
     wrapper
   }
