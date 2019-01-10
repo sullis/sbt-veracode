@@ -3,15 +3,19 @@ package io.github.sullis.sbt.veracode
 import sbt._
 
 object VeracodePlugin extends AutoPlugin {
-  val veracodeApiId = settingKey[String]("Veracode API id")
-  val veracodeApiKey = settingKey[String]("Veracode API key")
-  val veracodeArtifact = settingKey[String]("artifact on the local filesystem")
-  val veracodeAppName = settingKey[String]("application name")
+  object autoImport {
+    val veracodeApiId = settingKey[String]("Veracode API id")
+    val veracodeApiKey = settingKey[String]("Veracode API key")
+    val veracodeArtifact = settingKey[String]("artifact on the local filesystem")
+    val veracodeAppName = settingKey[String]("application name")
 
-  val veracodeInitApi = taskKey[VeracodeApi]("veracodeInitApi")
-  val veracodeCreateBuild = taskKey[Unit]("veracodeCreateBuild")
-  val veracodeUploadFile = taskKey[Unit]("veracodeUploadFile")
-  val veracodeUploadFileSandbox = taskKey[Unit]("veracodeUploadFileSandbox")
+    val veracodeInitApi = taskKey[VeracodeApi]("veracodeInitApi")
+    val veracodeCreateBuild = taskKey[Unit]("veracodeCreateBuild")
+    val veracodeUploadFile = taskKey[Unit]("veracodeUploadFile")
+    val veracodeUploadFileSandbox = taskKey[Unit]("veracodeUploadFileSandbox")
+  }
+
+  import autoImport._
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
     veracodeAppName := sbt.Keys.name.value,
