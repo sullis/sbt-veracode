@@ -22,7 +22,10 @@ class VeracodeWrapperFactory(credentials: ApiCredentials) {
   }
 }
 
-case class ApiCredentials(apiId: String, apiKey: String)
+case class ApiCredentials(apiId: String, apiKey: String) {
+  require(apiId != null, "apiId")
+  require(apiKey != null, "apiKey")
+}
 
 object CredentialsUtil {
   def setCredentials[W <: AbstractAPIWrapper](credentials: ApiCredentials, wrapper: W): W = {
