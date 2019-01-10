@@ -1,10 +1,14 @@
 package io.github.sullis.sbt.veracode
 
 import sbt._
-import sbt.Keys._
 
 object VeracodePlugin extends AutoPlugin {
-  val apiKey = settingKey[String]("Veracode API key")
-  val apiId = settingKey[String]("Veracode API id")
-  val artifact = settingKey[String]("artifact on the local filesystem")
+  val veracodeApiKey = settingKey[String]("Veracode API key")
+  val veracodeApiId = settingKey[String]("Veracode API id")
+  val veracodeArtifact = settingKey[String]("artifact on the local filesystem")
+  val veracodeAppName = settingKey[String]("artifact on the local filesystem")
+
+  override lazy val projectSettings = Seq(
+    veracodeAppName := sbt.Keys.name.value
+  )
 }
