@@ -27,10 +27,10 @@ object VeracodePlugin extends AutoPlugin {
   private val allTasks = Seq(
     veracodeResolveApiCredentials := {
       val apiId = veracodeApiId.value.getOrElse {
-        "aaa"
+        Option(System.getenv("VERACODE_API_ID")).getOrElse(throw new RuntimeException("missing Veracode API id"))
       }
       val apiKey = veracodeApiKey.value.getOrElse {
-        "bbb"
+        Option(System.getenv("VERACODE_API_KEY")).getOrElse(throw new RuntimeException("missing Veracode API key"))
       }
       val creds = new ApiCredentials(apiId = apiId, apiKey = apiKey)
       System.out.println("veracodeResolveApiCredentials: " + creds)
