@@ -4,11 +4,12 @@ import sbt._
 
 object VeracodePlugin extends AutoPlugin {
   object autoImport {
-    val veracodeApiId = settingKey[String]("Veracode API id")
-    val veracodeApiKey = settingKey[String]("Veracode API key")
+    val veracodeApiId = settingKey[Option[String]]("Veracode API id")
+    val veracodeApiKey = settingKey[Option[String]]("Veracode API key")
     val veracodeArtifact = settingKey[String]("artifact on the local filesystem")
     val veracodeAppName = settingKey[String]("application name")
 
+    val veracodeResolveApiCredentials = taskKey[ApiCredentials]("veracodeResolveApiCredentials")
     val veracodeInitApi = taskKey[VeracodeApi]("veracodeInitApi")
     val veracodeCreateBuild = taskKey[Unit]("veracodeCreateBuild")
     val veracodeUploadFile = taskKey[Unit]("veracodeUploadFile")
@@ -19,12 +20,24 @@ object VeracodePlugin extends AutoPlugin {
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
     veracodeAppName := sbt.Keys.name.value,
+    veracodeApiId := None,
+    veracodeApiKey := None
   ) ++ allTasks
 
   private val allTasks = Seq(
+    veracodeResolveApiCredentials := {
+      val apiId = veracodeApiId.value.getOrElse {
+        "aaa"
+      }
+      val apiKey = veracodeApiKey.value.getOrElse {
+        "bbb"
+      }
+      val creds = new ApiCredentials(apiId = apiId, apiKey = apiKey)
+      System.out.println("veracodeResolveApiCredentials: " + creds)
+      creds
+    },
     veracodeInitApi := {
-      val apiCredentials = new ApiCredentials(veracodeApiId.value, veracodeApiKey.value)
-      val api = new VeracodeApiImpl(new VeracodeWrapperFactory(apiCredentials), "appId1234", "sandboxId1234")
+      val api = new VeracodeApiImpl(new VeracodeWrapperFactory(veracodeResolveApiCredentials.value), "appId1234", "sandboxId1234")
       System.out.println("veracodeInitApi: " + api)
       api
     },
