@@ -21,13 +21,15 @@ object VeracodePlugin extends AutoPlugin {
 
   private val allTasks = Seq(
     veracodeInitApi := {
-      val api = new VeracodeApiImpl(new VeracodeWrapperFactory(apiCredentials), "appId1234", "sandboxId1234")
+      val api = new VeracodeApiImpl(new VeracodeWrapperFactory(apiCredentials), "testAppId1234", "testSandboxId1234")
       System.out.println("veracodeInitApi: " + api)
       api
     },
     veracodeCreateBuild := {
-      val veracodeApi = veracodeInitApi.value
+      val api = veracodeInitApi.value
       System.out.println("veracodeCreateBuild")
+      val result = api.createBuild("build" + System.currentTimeMillis)
+      System.out.println(result)
     },
 
     veracodeUploadFile := {
