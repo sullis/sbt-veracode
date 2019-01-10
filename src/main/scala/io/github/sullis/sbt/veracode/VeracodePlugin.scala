@@ -8,25 +8,25 @@ object VeracodePlugin extends AutoPlugin {
   val veracodeArtifact = settingKey[String]("artifact on the local filesystem")
   val veracodeAppName = settingKey[String]("application name")
 
-  val createBuild = taskKey[Unit]("createBuild")
-  val uploadFile = taskKey[Unit]("uploadFile")
-  val uploadFileSandbox = taskKey[Unit]("uploadFileSandbox")
+  val veracodeCreateBuild = taskKey[Unit]("createBuild")
+  val veracodeUploadFile = taskKey[Unit]("uploadFile")
+  val veracodeUploadFileSandbox = taskKey[Unit]("uploadFileSandbox")
 
   override lazy val projectSettings: Seq[Setting[_]] = Seq(
     veracodeAppName := sbt.Keys.name.value,
   ) ++ allTasks
 
   private val allTasks = Seq(
-    createBuild := {
-      System.out.println("createBuild")
+    veracodeCreateBuild := {
+      System.out.println("veracodeCreateBuild")
     },
 
-    uploadFile := {
-      System.out.println("uploadFile")
+    veracodeUploadFile := {
+      System.out.println("veracodeUploadFile")
     },
 
-    uploadFileSandbox := {
-      System.out.println("uploadFileSandbox")
+    veracodeUploadFileSandbox := {
+      System.out.println("veracodeUploadFileSandbox")
     }
   )
 }
