@@ -8,25 +8,36 @@ object VeracodePlugin extends AutoPlugin {
   val veracodeArtifact = settingKey[String]("artifact on the local filesystem")
   val veracodeAppName = settingKey[String]("application name")
 
-  val veracodeCreateBuild = taskKey[Unit]("createBuild")
-  val veracodeUploadFile = taskKey[Unit]("uploadFile")
-  val veracodeUploadFileSandbox = taskKey[Unit]("uploadFileSandbox")
+  val veracodeInitApi = taskKey[VeracodeApi]("veracodeInitApi")
+  val veracodeCreateBuild = taskKey[Unit]("veracodeCreateBuild")
+  val veracodeUploadFile = taskKey[Unit]("veracodeUploadFile")
+  val veracodeUploadFileSandbox = taskKey[Unit]("veracodeUploadFileSandbox")
 
-  override lazy val projectSettings: Seq[Setting[_]] = Seq(
+  override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
     veracodeAppName := sbt.Keys.name.value,
   ) ++ allTasks
 
   private val allTasks = Seq(
+    veracodeInitApi := {
+      val apiCredentials = new ApiCredentials(veracodeApiId.value, veracodeApiKey.value)
+      val api = new VeracodeApiImpl(new VeracodeWrapperFactory(apiCredentials), "appId1234", "sandboxId1234")
+      System.out.println("veracodeInitApi: " + api)
+      api
+    },
     veracodeCreateBuild := {
+      val veracodeApi = veracodeInitApi.value
       System.out.println("veracodeCreateBuild")
     },
 
     veracodeUploadFile := {
+      val veracodeApi = veracodeInitApi.value
       System.out.println("veracodeUploadFile")
     },
 
     veracodeUploadFileSandbox := {
+      val veracodeApi = veracodeInitApi.value
       System.out.println("veracodeUploadFileSandbox")
     }
   )
+
 }
