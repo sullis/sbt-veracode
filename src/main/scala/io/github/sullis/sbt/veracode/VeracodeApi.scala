@@ -22,7 +22,7 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory, appId: Str
   }
 
   override def createBuild(buildVersion: String): String =  {
-    System.out.println("createBuild: appId=" + appId)
+    System.out.println("createBuild: appId=" + appId + " with buildVersion " + buildVersion)
     veracodeWrapperFactory.uploadApi.createBuild(appId, buildVersion)
   }
 

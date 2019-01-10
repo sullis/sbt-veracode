@@ -1,4 +1,4 @@
 enablePlugins(VeracodePlugin)
-name := "min-project"
+name := "svc-mq-consumer"
 
 scalaVersion := "2.12.8"
