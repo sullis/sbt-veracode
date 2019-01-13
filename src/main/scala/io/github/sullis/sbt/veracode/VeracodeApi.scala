@@ -3,7 +3,7 @@ package io.github.sullis.sbt.veracode
 import java.io.File
 
 trait VeracodeApi {
-  def beginPreScan: String
+  def beginScan: String
   def createBuild(buildVersion: String): Either[VeracodeError, String]
   def getAppInfo: String
   def uploadFile(file: java.io.File): String
@@ -11,10 +11,9 @@ trait VeracodeApi {
 
 class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory, appId: String)
   extends VeracodeApi {
-  override def beginPreScan: String = {
-    veracodeWrapperFactory.uploadApi.beginPreScan(appId)
+  override def beginScan: String = {
+    veracodeWrapperFactory.uploadApi.beginScan(appId, null, null)
   }
-
   override def createBuild(buildVersion: String): Either[VeracodeError, String] =  {
     System.out.println("createBuild: appId=" + appId + " with buildVersion " + buildVersion)
     val responseXml = veracodeWrapperFactory.uploadApi.createBuild(appId, buildVersion)

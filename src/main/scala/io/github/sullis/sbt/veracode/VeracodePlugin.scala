@@ -41,6 +41,7 @@ object VeracodePlugin extends AutoPlugin {
     },
     veracodeBeginScan := {
       val veracodeApi = veracodeInitApi.value
+      veracodeApi.beginScan()
       System.out.println("veracodeBeginScan")
     },
 
