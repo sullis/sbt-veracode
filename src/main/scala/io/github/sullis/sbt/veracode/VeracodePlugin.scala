@@ -3,7 +3,6 @@ package io.github.sullis.sbt.veracode
 import sbt._
 
 object VeracodePlugin extends AutoPlugin {
-  private val defaultBusinessCriticality = "VL4"
 
   object autoImport {
     val veracodeArtifact = settingKey[String]("artifact on the local filesystem")
@@ -23,12 +22,10 @@ object VeracodePlugin extends AutoPlugin {
 
   private val allTasks = Seq(
     veracodeResolveAppId := {
-      val wrapper = new VeracodeWrapperFactory(apiCredentials)
-      wrapper.fetchAppId(veracodeAppName.value)
+      veracodeInitApi.value.fetchAppId(veracodeAppName.value)
     },
     veracodeInitApi := {
-      val api = new VeracodeApiImpl(new VeracodeWrapperFactory(apiCredentials), appId = veracodeResolveAppId.value)
-      System.out.println("veracodeInitApi: " + api)
+      val api = new VeracodeApiImpl(new VeracodeWrapperFactory(apiCredentials))
       api
     },
     veracodeUploadFile := {
@@ -37,11 +34,11 @@ object VeracodePlugin extends AutoPlugin {
         throw new RuntimeException("File does not exist: " + veracodeArtifact.value)
       }
       val veracodeApi = veracodeInitApi.value
-      veracodeApi.uploadFile(file)
+      veracodeApi.uploadFile(veracodeResolveAppId.value, file)
     },
     veracodeBeginScan := {
       val veracodeApi = veracodeInitApi.value
-      veracodeApi.beginScan()
+      veracodeApi.beginScan(veracodeResolveAppId.value)
       System.out.println("veracodeBeginScan")
     },
 
