@@ -29,7 +29,7 @@ object VeracodePlugin extends AutoPlugin {
       wrapper.fetchAppId(veracodeAppName.value)
     },
     veracodeInitApi := {
-      val api = new VeracodeApiImpl(new VeracodeWrapperFactory(apiCredentials), appId = veracodeResolveAppId.value, "testSandboxId1234")
+      val api = new VeracodeApiImpl(new VeracodeWrapperFactory(apiCredentials), appId = veracodeResolveAppId.value)
       System.out.println("veracodeInitApi: " + api)
       api
     },
