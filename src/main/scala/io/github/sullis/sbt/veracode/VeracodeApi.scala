@@ -6,10 +6,10 @@ import scala.xml.XML
 
 trait VeracodeApi {
   def fetchAppId(appName: String): String
-  def beginScan(appId: String): String
+  def beginScan(appId: String): Either[VeracodeError, String]
   def createBuild(appId: String, buildVersion: String): Either[VeracodeError, String]
   def getAppInfo(appId: String): String
-  def uploadFile(appId: String, file: java.io.File): String
+  def uploadFile(appId: String, file: java.io.File): Either[VeracodeError, String]
 }
 
 class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
@@ -27,28 +27,35 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
   }
 
 
-  override def beginScan(appId: String): String = {
-    veracodeWrapperFactory.uploadApi.beginScan(appId, null, null)
+  override def beginScan(appId: String): Either[VeracodeError, String] = {
+    val xml = veracodeWrapperFactory.uploadApi.beginScan(appId, null, null)
+    checkForErrors(xml)
   }
   override def createBuild(appId: String, buildVersion: String): Either[VeracodeError, String] =  {
     System.out.println("createBuild: appId=" + appId + " with buildVersion " + buildVersion)
-    val responseXml = veracodeWrapperFactory.uploadApi.createBuild(appId, buildVersion)
-    System.out.println("XML: " + responseXml)
-    val error = VeracodeXmlUtil.findError(responseXml)
-    error match {
-      case Some(e) => Left(e)
-      case _ => Right("buildId-FIXME")
-    }
+    val xml = veracodeWrapperFactory.uploadApi.createBuild(appId, buildVersion)
+    checkForErrors(xml)
   }
 
   override def getAppInfo(appId: String): String =  {
     veracodeWrapperFactory.uploadApi.getAppInfo(appId)
   }
 
-  override def uploadFile(appId: String, file: File): String = {
-    val xmlResponse = veracodeWrapperFactory.uploadApi.uploadFile(appId, file.getCanonicalPath)
-    System.out.println("uploadFile response: " + xmlResponse)
-    xmlResponse
+  override def uploadFile(appId: String, file: File): Either[VeracodeError, String] = {
+    val xml = veracodeWrapperFactory.uploadApi.uploadFile(appId, file.getCanonicalPath)
+    checkForErrors(xml)
   }
 
+  private def checkForErrors(xmlResponse: String): Either[VeracodeError, String] = {
+    System.out.println("XML: " + xmlResponse)
+    val error = VeracodeXmlUtil.findError(xmlResponse)
+    error match {
+      case Some(e) => {
+        System.err.println("Veracode API error: " + e)
+        Left(e)
+      }
+      case _ => Right(xmlResponse)
+    }
+
+  }
 }
