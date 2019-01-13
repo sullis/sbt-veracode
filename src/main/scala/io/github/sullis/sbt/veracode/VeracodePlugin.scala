@@ -32,8 +32,12 @@ object VeracodePlugin extends AutoPlugin {
       api
     },
     veracodeUploadFile := {
+      val file = new File(veracodeArtifact.value)
+      if (!file.exists()) {
+        throw new RuntimeException("File does not exist: " + veracodeArtifact.value)
+      }
       val veracodeApi = veracodeInitApi.value
-      System.out.println("veracodeUploadFile")
+      veracodeApi.uploadFile(file)
     },
     veracodeBeginScan := {
       val veracodeApi = veracodeInitApi.value

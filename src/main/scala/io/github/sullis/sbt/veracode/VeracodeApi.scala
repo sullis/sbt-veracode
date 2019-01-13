@@ -31,8 +31,9 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory, appId: Str
   }
 
   override def uploadFile(file: File): String = {
-    veracodeWrapperFactory.uploadApi.uploadFile(appId, file.getCanonicalPath)
+    val xmlResponse = veracodeWrapperFactory.uploadApi.uploadFile(appId, file.getCanonicalPath)
+    System.out.println("uploadFile response: " + xmlResponse)
+    xmlResponse
   }
 
 }
-
