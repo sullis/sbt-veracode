@@ -5,7 +5,7 @@ import java.io.File
 trait VeracodeApi {
   def beginPreScan: String
   def beginPreScanSandbox: String
-  def createBuild(buildVersion: String): String
+  def createBuild(buildVersion: String): Either[VeracodeError, String]
   def getAppInfo: String
   def uploadFile(file: java.io.File): String
   def uploadFileSandbox(file: java.io.File): String
@@ -21,9 +21,15 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory, appId: Str
     veracodeWrapperFactory.uploadApi.beginPreScan(appId, sandboxId)
   }
 
-  override def createBuild(buildVersion: String): String =  {
+  override def createBuild(buildVersion: String): Either[VeracodeError, String] =  {
     System.out.println("createBuild: appId=" + appId + " with buildVersion " + buildVersion)
-    veracodeWrapperFactory.uploadApi.createBuild(appId, buildVersion)
+    val responseXml = veracodeWrapperFactory.uploadApi.createBuild(appId, buildVersion)
+    System.out.println("XML: " + responseXml)
+    val error = VeracodeXmlUtil.findError(responseXml)
+    error match {
+      case Some(e) => Left(e)
+      case _ => Right("buildId-FIXME")
+    }
   }
 
   override def getAppInfo: String =  {
