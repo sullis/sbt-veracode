@@ -22,7 +22,10 @@ object VeracodePlugin extends AutoPlugin {
 
   private val allTasks = Seq(
     veracodeResolveAppId := {
-      veracodeInitApi.value.fetchAppId(veracodeAppName.value)
+      val appId = veracodeInitApi.value.fetchAppId(veracodeAppName.value)
+      System.out.println("Veracode appName: " + veracodeAppName.value)
+      System.out.println("Veracode appId: " + appId)
+      appId
     },
     veracodeInitApi := {
       val api = new VeracodeApiImpl(new VeracodeWrapperFactory(apiCredentials))
