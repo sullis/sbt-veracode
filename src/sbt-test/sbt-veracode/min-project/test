@@ -1,5 +1,7 @@
 > 'set version := "0.1"'
+> clean
+> package
 > veracodeInitApi
 > veracodeResolveAppId
-> veracodeCreateBuild
-
+> veracodeUploadFile
+> veracodeBeginScan
