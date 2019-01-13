@@ -8,13 +8,11 @@ object VeracodePlugin extends AutoPlugin {
   object autoImport {
     val veracodeArtifact = settingKey[String]("artifact on the local filesystem")
     val veracodeAppName = settingKey[String]("Veracode app name")
-    val veracodeAppId = settingKey[String]("Veracode app id")
 
     val veracodeInitApi = taskKey[VeracodeApi]("veracodeInitApi")
     val veracodeResolveAppId = taskKey[String]("veracodeResolveAppId")
-    val veracodeCreateBuild = taskKey[Unit]("veracodeCreateBuild")
     val veracodeUploadFile = taskKey[Unit]("veracodeUploadFile")
-    val veracodeUploadFileSandbox = taskKey[Unit]("veracodeUploadFileSandbox")
+    val veracodeBeginScan = taskKey[Unit]("veracodeBeginScan")
   }
 
   import autoImport._
@@ -33,22 +31,15 @@ object VeracodePlugin extends AutoPlugin {
       System.out.println("veracodeInitApi: " + api)
       api
     },
-    veracodeCreateBuild := {
-      val api = veracodeInitApi.value
-      System.out.println("veracodeCreateBuild")
-      val result = api.createBuild("build" + System.currentTimeMillis)
-      System.out.println(result)
-    },
-
     veracodeUploadFile := {
       val veracodeApi = veracodeInitApi.value
       System.out.println("veracodeUploadFile")
     },
-
-    veracodeUploadFileSandbox := {
+    veracodeBeginScan := {
       val veracodeApi = veracodeInitApi.value
-      System.out.println("veracodeUploadFileSandbox")
-    }
+      System.out.println("veracodeBeginScan")
+    },
+
   )
 
   private lazy val apiId: String = {
