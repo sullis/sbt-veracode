@@ -18,7 +18,7 @@ object VeracodePlugin extends AutoPlugin {
     veracodeAppName := sbt.Keys.name.value
   ) ++ allTasks
 
-  private val api = new VeracodeApiImpl(new VeracodeWrapperFactory(apiCredentials))
+  private val api = new VeracodeApiImpl(new VeracodeWrapperFactory(credentials))
 
   private val allTasks = Seq(
     veracodeResolveAppId := {
@@ -39,15 +39,17 @@ object VeracodePlugin extends AutoPlugin {
     }
   )
 
-  private lazy val apiId: String = {
-    Option(System.getenv("VERACODE_API_ID")).getOrElse(throw new RuntimeException("missing environment var: VERACODE_API_ID"))
+  private lazy val apiCredentials: Option[ApiCredentials] = {
+    Option(System.getenv("VERACODE_API_ID")).map(apiId => ApiCredentials(apiId, System.getenv("VERACODE_API_KEY")))
   }
 
-  private lazy val apiKey: String = {
-    Option(System.getenv("VERACODE_API_KEY")).getOrElse(throw new RuntimeException("missing environment var: VERACODE_API_KEY"))
+  private lazy val userCredentials: Option[UserCredentials] = {
+    Option(System.getenv("VERACODE_USERNAME")).map(username => UserCredentials(username, System.getenv("VERACODE_PASSWORD")))
   }
 
-  private lazy val apiCredentials = new ApiCredentials(apiId = apiId, apiKey = apiKey)
+
+  private lazy val credentials: Either[ApiCredentials, UserCredentials] = {
+    apiCredentials.toLeft(userCredentials.getOrElse(throw new RuntimeException("missing Veracode credentials")))
+  }
 
 }
-
