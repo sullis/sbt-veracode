@@ -32,7 +32,7 @@ object VeracodePlugin extends AutoPlugin {
       System.out.println("veracodeUploadFile")
       val file = new File(veracodeArtifact.value)
       api.uploadFile(veracodeResolveAppId.value, file)
-      api.beginScan(veracodeResolveAppId.value)
+      api.beginPreScan(veracodeResolveAppId.value)
     }
   )
 

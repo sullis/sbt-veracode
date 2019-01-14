@@ -6,7 +6,7 @@ import scala.xml.XML
 
 trait VeracodeApi {
   def fetchAppId(appName: String): String
-  def beginScan(appId: String): Either[VeracodeError, String]
+  def beginPreScan(appId: String): Either[VeracodeError, String]
   def createBuild(appId: String, buildVersion: String): Either[VeracodeError, String]
   def getAppInfo(appId: String): String
   def uploadFile(appId: String, file: java.io.File): Either[VeracodeError, String]
@@ -27,10 +27,11 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
   }
 
 
-  override def beginScan(appId: String): Either[VeracodeError, String] = {
-    val xml = veracodeWrapperFactory.uploadApi.beginScan(appId, null, null)
+  override def beginPreScan(appId: String): Either[VeracodeError, String] = {
+    val xml = veracodeWrapperFactory.uploadApi.beginPreScan(appId, null, "true", "true")
     checkForErrors(xml)
   }
+
   override def createBuild(appId: String, buildVersion: String): Either[VeracodeError, String] =  {
     System.out.println("createBuild: appId=" + appId + " with buildVersion " + buildVersion)
     val xml = veracodeWrapperFactory.uploadApi.createBuild(appId, buildVersion)
