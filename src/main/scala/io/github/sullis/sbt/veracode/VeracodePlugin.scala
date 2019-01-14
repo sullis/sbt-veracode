@@ -9,8 +9,7 @@ object VeracodePlugin extends AutoPlugin {
     val veracodeAppName = settingKey[String]("Veracode app name")
 
     val veracodeResolveAppId = taskKey[String]("veracodeResolveAppId")
-    val veracodeUploadFile = taskKey[Unit]("veracodeUploadFile")
-    val veracodeBeginScan = taskKey[Unit]("veracodeBeginScan")
+    val veracodeUploadAndScan = taskKey[Unit]("veracodeUploadAndScan")
   }
 
   import autoImport._
@@ -29,19 +28,15 @@ object VeracodePlugin extends AutoPlugin {
       System.out.println("Veracode appId: " + appId)
       appId
     },
-    veracodeUploadFile := {
+    veracodeUploadAndScan := {
       System.out.println("veracodeUploadFile")
       val file = new File(veracodeArtifact.value)
       if (!file.exists()) {
         throw new RuntimeException("File does not exist: " + veracodeArtifact.value)
       }
       api.uploadFile(veracodeResolveAppId.value, file)
-    },
-    veracodeBeginScan := {
-      System.out.println("veracodeBeginScan")
       api.beginScan(veracodeResolveAppId.value)
-    },
-
+    }
   )
 
   private lazy val apiId: String = {

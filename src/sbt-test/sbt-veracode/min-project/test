@@ -1,5 +1,4 @@
 > clean
 > package
 > veracodeResolveAppId
-> veracodeUploadFile
-> veracodeBeginScan
+> veracodeUploadAndScan
