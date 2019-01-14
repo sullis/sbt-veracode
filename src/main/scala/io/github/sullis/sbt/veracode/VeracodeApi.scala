@@ -43,7 +43,7 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
 
   override def uploadFile(appId: String, file: File): Either[VeracodeError, String] = {
     val filePath = file.getCanonicalPath
-    System.out.println(s"uploadFile: filePath[${filePath}]")
+    System.out.println(s"uploadFile: filePath[${filePath}] appId[$appId]")
     if (!file.exists) {
       throw new RuntimeException(s"uploadFile: [${filePath} does not exist")
     }
