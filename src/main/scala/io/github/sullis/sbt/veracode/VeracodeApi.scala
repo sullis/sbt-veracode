@@ -42,12 +42,20 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
   }
 
   override def uploadFile(appId: String, file: File): Either[VeracodeError, String] = {
-    val xml = veracodeWrapperFactory.uploadApi.uploadFile(appId, file.getCanonicalPath)
+    val filePath = file.getCanonicalPath
+    System.out.println(s"uploadFile: filePath[${filePath}]")
+    if (!file.exists) {
+      throw new RuntimeException(s"uploadFile: [${filePath} does not exist")
+    }
+    if (!file.canRead) {
+      throw new RuntimeException(s"uploadFile: cannot read file [${filePath}]")
+    }
+    val xml = veracodeWrapperFactory.uploadApi.uploadFile(appId, filePath)
     checkForErrors(xml)
   }
 
   private def checkForErrors(xmlResponse: String): Either[VeracodeError, String] = {
-    System.out.println("XML: " + xmlResponse)
+    System.out.println("XML response: " + xmlResponse)
     val error = VeracodeXmlUtil.findError(xmlResponse)
     error match {
       case Some(e) => {
