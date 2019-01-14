@@ -8,7 +8,6 @@ object VeracodePlugin extends AutoPlugin {
     val veracodeArtifact = settingKey[String]("artifact on the local filesystem")
     val veracodeAppName = settingKey[String]("Veracode app name")
 
-    val veracodeInitApi = taskKey[VeracodeApi]("veracodeInitApi")
     val veracodeResolveAppId = taskKey[String]("veracodeResolveAppId")
     val veracodeUploadFile = taskKey[Unit]("veracodeUploadFile")
     val veracodeBeginScan = taskKey[Unit]("veracodeBeginScan")
@@ -20,29 +19,27 @@ object VeracodePlugin extends AutoPlugin {
     veracodeAppName := sbt.Keys.name.value
   ) ++ allTasks
 
+  private val api = new VeracodeApiImpl(new VeracodeWrapperFactory(apiCredentials))
+
   private val allTasks = Seq(
     veracodeResolveAppId := {
-      val appId = veracodeInitApi.value.fetchAppId(veracodeAppName.value)
+      System.out.println("veracodeResolveAppId")
+      val appId = api.fetchAppId(veracodeAppName.value)
       System.out.println("Veracode appName: " + veracodeAppName.value)
       System.out.println("Veracode appId: " + appId)
       appId
     },
-    veracodeInitApi := {
-      val api = new VeracodeApiImpl(new VeracodeWrapperFactory(apiCredentials))
-      api
-    },
     veracodeUploadFile := {
+      System.out.println("veracodeUploadFile")
       val file = new File(veracodeArtifact.value)
       if (!file.exists()) {
         throw new RuntimeException("File does not exist: " + veracodeArtifact.value)
       }
-      val veracodeApi = veracodeInitApi.value
-      veracodeApi.uploadFile(veracodeResolveAppId.value, file)
+      api.uploadFile(veracodeResolveAppId.value, file)
     },
     veracodeBeginScan := {
-      val veracodeApi = veracodeInitApi.value
-      veracodeApi.beginScan(veracodeResolveAppId.value)
       System.out.println("veracodeBeginScan")
+      api.beginScan(veracodeResolveAppId.value)
     },
 
   )

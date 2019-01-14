@@ -1,6 +1,5 @@
 > clean
 > package
-> veracodeInitApi
 > veracodeResolveAppId
 > veracodeUploadFile
 > veracodeBeginScan
