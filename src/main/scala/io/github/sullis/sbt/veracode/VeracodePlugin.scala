@@ -9,7 +9,7 @@ object VeracodePlugin extends AutoPlugin {
     val veracodeAppName = settingKey[String]("Veracode app name")
 
     val veracodeResolveAppId = taskKey[String]("veracodeResolveAppId")
-    val veracodeUploadAndScan = taskKey[Unit]("veracodeUploadAndScan")
+    val veracodeSubmit = taskKey[Unit]("veracodeSubmit")
   }
 
   import autoImport._
@@ -28,11 +28,15 @@ object VeracodePlugin extends AutoPlugin {
       System.out.println("Veracode appId: " + appId)
       appId
     },
-    veracodeUploadAndScan := {
-      System.out.println("veracodeUploadFile")
+    veracodeSubmit := {
+      System.out.println("veracodeSubmit")
+      val appId = veracodeResolveAppId.value
       val file = new File(veracodeArtifact.value)
-      api.uploadFile(veracodeResolveAppId.value, file)
-      api.beginPreScan(veracodeResolveAppId.value)
+      if (api.isScanRunning(appId)) {
+        api.deleteBuild(appId)
+      }
+      api.uploadFile(appId, file)
+      api.beginPreScan(appId)
     }
   )
 

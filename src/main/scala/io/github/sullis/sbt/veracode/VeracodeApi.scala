@@ -1,19 +1,38 @@
 package io.github.sullis.sbt.veracode
 
 import java.io.File
-
 import scala.xml.XML
 
 trait VeracodeApi {
   def fetchAppId(appName: String): String
   def beginPreScan(appId: String): Either[VeracodeError, String]
+  def deleteBuild(appId: String): Either[VeracodeError, String]
   def createBuild(appId: String, buildVersion: String): Either[VeracodeError, String]
   def getAppInfo(appId: String): String
   def uploadFile(appId: String, file: java.io.File): Either[VeracodeError, String]
+  def isScanRunning(appId: String): Boolean
+  def getScanStatus(appId: String): String
 }
 
 class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
   extends VeracodeApi {
+
+  def getScanStatus(appId: String): String = {
+    val responseString = veracodeWrapperFactory.uploadApi.getBuildInfo(appId)
+    System.out.println(responseString)
+    val xml = scala.xml.XML.loadString(responseString)
+    val status = xml \\ "buildinfo" \\ "build" \\ "analysis_unit" \@ "status"
+    System.out.println("status: " + status)
+    status
+  }
+
+  override def isScanRunning(appId: String): Boolean = {
+    val status = getScanStatus(appId)
+    System.out.println("status: " + status)
+    val result = !status.equals("Results Ready")
+    System.out.println("isScanRunning: " + result)
+    result
+  }
 
   override def fetchAppId(appName: String): String = {
     val responseString = veracodeWrapperFactory.uploadApi.getAppList
@@ -55,16 +74,21 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
     checkForErrors(xml)
   }
 
+  override def deleteBuild(appId: String): Either[VeracodeError, String] = {
+    val responseString = veracodeWrapperFactory.uploadApi.deleteBuild(appId)
+    checkForErrors(responseString)
+  }
+
   private def checkForErrors(xmlResponse: String): Either[VeracodeError, String] = {
-    System.out.println("XML response: " + xmlResponse)
     val error = VeracodeXmlUtil.findError(xmlResponse)
     error match {
       case Some(e) => {
-        System.err.println("Veracode API error: " + e)
+        System.err.println("Veracode API error: " + e + " in XML: " + xmlResponse)
         Left(e)
       }
       case _ => Right(xmlResponse)
     }
 
   }
+
 }
