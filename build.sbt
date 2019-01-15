@@ -25,7 +25,7 @@ scalacOptions ++= List(
   "-encoding", "UTF-8"
 )
 
-publishMavenStyle := true
+publishMavenStyle := false
 
 bintrayOrganization in bintray := None
 
