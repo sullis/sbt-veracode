@@ -1,11 +1,11 @@
 package io.github.sullis.sbt.veracode
 
 import sbt._
+import sbt.Keys.packagedArtifacts
 
 object VeracodePlugin extends AutoPlugin {
 
   object autoImport {
-    val veracodeArtifact = settingKey[String]("artifact on the local filesystem")
     val veracodeAppName = settingKey[String]("Veracode app name")
 
     val veracodeResolveAppId = taskKey[String]("veracodeResolveAppId")
@@ -31,7 +31,9 @@ object VeracodePlugin extends AutoPlugin {
     veracodeSubmit := {
       System.out.println("veracodeSubmit")
       val appId = veracodeResolveAppId.value
-      val file = new File(veracodeArtifact.value)
+      val file = packagedArtifacts.value.toList.filter(_._2.getName.endsWith(".jar")).head._2
+      System.out.println("Veracode artifact file: " + file.getCanonicalPath)
+
       if (api.isScanRunning(appId)) {
         api.deleteBuild(appId)
       }
