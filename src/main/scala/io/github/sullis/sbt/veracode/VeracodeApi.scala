@@ -19,18 +19,14 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
 
   def getScanStatus(appId: String): String = {
     val responseString = veracodeWrapperFactory.uploadApi.getBuildInfo(appId)
-    System.out.println(responseString)
     val xml = scala.xml.XML.loadString(responseString)
     val status = xml \\ "buildinfo" \\ "build" \\ "analysis_unit" \@ "status"
-    System.out.println("status: " + status)
     status
   }
 
   override def isScanRunning(appId: String): Boolean = {
     val status = getScanStatus(appId)
-    System.out.println("status: " + status)
     val result = !status.equals("Results Ready")
-    System.out.println("isScanRunning: " + result)
     result
   }
 
@@ -52,7 +48,6 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
   }
 
   override def createBuild(appId: String, buildVersion: String): Either[VeracodeError, String] =  {
-    System.out.println("createBuild: appId=" + appId + " with buildVersion " + buildVersion)
     val xml = veracodeWrapperFactory.uploadApi.createBuild(appId, buildVersion)
     checkForErrors(xml)
   }
@@ -63,7 +58,6 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
 
   override def uploadFile(appId: String, file: File): Either[VeracodeError, String] = {
     val filePath = file.getCanonicalPath
-    System.out.println(s"uploadFile: filePath[${filePath}] appId[$appId]")
     if (!file.exists) {
       throw new RuntimeException(s"uploadFile: [${filePath} does not exist")
     }
