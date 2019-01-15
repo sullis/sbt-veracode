@@ -16,6 +16,8 @@ scriptedBufferLog := false
 
 git.useGitDescribe := true
 
+git.gitTagToVersionNumber := git.defaultTagByVersionStrategy
+
 scalacOptions ++= List(
   "-unchecked",
   "-deprecation",
