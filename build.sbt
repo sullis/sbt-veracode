@@ -2,6 +2,8 @@ organization := "io.github.sullis"
 
 name := "sbt-veracode"
 
+description := "SBT plugin for Veracode code analyzer"
+
 crossSbtVersions := List("0.13.18", "1.2.8")
 
 enablePlugins(SbtPlugin, GitVersioning, GitBranchPrompt)
@@ -23,13 +25,13 @@ scalacOptions ++= List(
 
 publishMavenStyle := false
 
-bintrayOrganization := Some("TODO")
+bintrayOrganization in bintray := None
 
 bintrayPackageLabels := Seq("sbt", "veracode")
 
-bintrayRepository := "sbt-plugin-releases"
+bintrayRepository := "sbt-plugins"
 
-licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
+licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 
 val awsSdkVersion = "2.3.0"
 
