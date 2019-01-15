@@ -4,7 +4,7 @@ name := "sbt-veracode"
 
 description := "SBT plugin for Veracode code analyzer"
 
-crossSbtVersions := List("0.13.18", "1.2.8")
+crossSbtVersions := List("1.2.8")
 
 enablePlugins(SbtPlugin, GitVersioning, GitBranchPrompt)
 
