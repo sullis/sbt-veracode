@@ -18,7 +18,7 @@ object VeracodePlugin extends AutoPlugin {
     veracodeAppName := sbt.Keys.name.value
   ) ++ allTasks
 
-  private val api = new VeracodeApiImpl(new VeracodeWrapperFactory(credentials))
+  private lazy val api = new VeracodeApiImpl(new VeracodeWrapperFactory(credentials))
 
   private def identifyArtifact(artifacts: Map[Artifact, File]): File = {
     artifacts.toList.map(_._2).filter(isValidJar(_)).head
