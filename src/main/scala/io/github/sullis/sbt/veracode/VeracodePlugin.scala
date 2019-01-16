@@ -20,6 +20,16 @@ object VeracodePlugin extends AutoPlugin {
 
   private val api = new VeracodeApiImpl(new VeracodeWrapperFactory(credentials))
 
+  private def identifyArtifact(artifacts: Map[Artifact, File]): File = {
+    artifacts.toList.map(_._2).filter(isValidJar(_)).head
+  }
+
+  private def isValidJar(file: File): Boolean = {
+    file.getName.endsWith(".jar") &&
+      !file.getName.endsWith("javadoc.jar") &&
+      !file.getName.endsWith("sources.jar")
+  }
+
   private val allTasks = Seq(
     veracodeResolveAppId := {
       System.out.println("veracodeResolveAppId")
@@ -31,7 +41,7 @@ object VeracodePlugin extends AutoPlugin {
     veracodeSubmit := {
       System.out.println("veracodeSubmit")
       val appId = veracodeResolveAppId.value
-      val file = packagedArtifacts.value.toList.filter(_._2.getName.endsWith(".jar")).head._2
+      val file = identifyArtifact(packagedArtifacts.value)
       System.out.println("Veracode artifact file: " + file.getCanonicalPath)
 
       if (api.isScanRunning(appId)) {
