@@ -18,7 +18,7 @@ object VeracodePlugin extends AutoPlugin {
     veracodeAppName := sbt.Keys.name.value
   ) ++ allTasks
 
-  private lazy val api = new VeracodeApiImpl(new VeracodeWrapperFactory(credentials))
+  private lazy val api: VeracodeApi = new VeracodeApiImpl(new VeracodeWrapperFactory(credentials))
 
   private def identifyArtifact(artifacts: Map[Artifact, File]): File = {
     artifacts.toList.map(_._2).filter(isValidJar(_)).head
@@ -33,9 +33,12 @@ object VeracodePlugin extends AutoPlugin {
   private val allTasks = Seq(
     veracodeResolveAppId := {
       System.out.println("veracodeResolveAppId")
-      val appId = api.fetchAppId(veracodeAppName.value)
-      System.out.println("Veracode appName: " + veracodeAppName.value)
+      val appName = veracodeAppName.value
+      val appId = api.fetchAppId(appName) getOrElse api.createApp(appName)
+
+      System.out.println("Veracode appName: " + appName)
       System.out.println("Veracode appId: " + appId)
+
       appId
     },
     veracodeSubmit := {

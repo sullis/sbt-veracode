@@ -4,7 +4,7 @@ import java.io.File
 import scala.xml.XML
 
 trait VeracodeApi {
-  def fetchAppId(appName: String): String
+  def fetchAppId(appName: String): Option[String]
   def beginPreScan(appId: String): Either[VeracodeError, String]
   def deleteBuild(appId: String): Either[VeracodeError, String]
   def createBuild(appId: String, buildVersion: String): Either[VeracodeError, String]
@@ -12,6 +12,7 @@ trait VeracodeApi {
   def uploadFile(appId: String, file: java.io.File): Either[VeracodeError, String]
   def isScanRunning(appId: String): Boolean
   def getScanStatus(appId: String): String
+  def createApp(appName: String): String
 }
 
 class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
@@ -30,7 +31,13 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
     result
   }
 
-  override def fetchAppId(appName: String): String = {
+  override def createApp(appName: String): String = {
+    val response = veracodeWrapperFactory.uploadApi.createApp(appName, "Very High")
+    val xml = XML.loadString(response)
+    xml \\ "application" \@ "app_id"
+  }
+
+  override def fetchAppId(appName: String): Option[String] = {
     val responseString = veracodeWrapperFactory.uploadApi.getAppList
     val xml = XML.loadString(responseString)
     val apps = (xml \\ "applist" \\ "app")
@@ -38,7 +45,11 @@ class VeracodeApiImpl(veracodeWrapperFactory: VeracodeWrapperFactory)
       val appNameAttributeValue = a \@ "app_name"
       appNameAttributeValue.equals(appName)
     })
-    app \@ "app_id"
+    val rawAppId = app \@ "app_id"
+    rawAppId.trim match {
+      case "" => None
+      case _ => Option(rawAppId.trim)
+    }
   }
 
 

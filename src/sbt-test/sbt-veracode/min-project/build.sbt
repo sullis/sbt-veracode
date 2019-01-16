@@ -1,6 +1,6 @@
 
 enablePlugins(VeracodePlugin)
-name := "svc-mq-consumer"
+name := "sbt-veracode-test-app"
 
 version := "1.0." + System.currentTimeMillis
 
