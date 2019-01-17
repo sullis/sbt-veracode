@@ -18,6 +18,12 @@ build.sbt
 enablePlugins(VeracodePlugin)
 ```
 
+# Command line
+
+```
+sbt clean package veracodeSubmit
+```
+
 
 # Unit testing
 
