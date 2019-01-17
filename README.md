@@ -21,17 +21,9 @@ enablePlugins(VeracodePlugin)
 # Command line
 
 ```
-sbt clean package veracodeSubmit
+sbt 'set scalacOptions += "-g:vars"' clean compile package veracodeSubmit
 ```
 
-
-# Unit testing
-
-```
-
-sbt scripted
-
-```
 
 # Related 
 * https://mvnrepository.com/artifact/com.veracode.vosp.api.wrappers/vosp-api-wrappers-java
