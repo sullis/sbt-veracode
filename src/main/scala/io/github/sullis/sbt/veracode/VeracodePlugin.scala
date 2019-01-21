@@ -17,7 +17,7 @@ object VeracodePlugin extends AutoPlugin {
   import autoImport._
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
-    veracodeAppName := sbt.Keys.name.value,
+    veracodeAppName := sbt.Keys.name.value
   ) ++ allTasks
 
   private lazy val api: VeracodeApi = new VeracodeApiImpl(new VeracodeWrapperFactory(credentials))
