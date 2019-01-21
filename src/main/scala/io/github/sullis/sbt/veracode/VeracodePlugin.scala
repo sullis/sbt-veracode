@@ -1,9 +1,11 @@
 package io.github.sullis.sbt.veracode
 
 import sbt._
-import sbt.Keys.packagedArtifacts
+import sbtassembly.{AssemblyKeys, AssemblyPlugin}
 
 object VeracodePlugin extends AutoPlugin {
+
+  override def requires = AssemblyPlugin
 
   object autoImport {
     val veracodeAppName = settingKey[String]("Veracode app name")
@@ -15,20 +17,10 @@ object VeracodePlugin extends AutoPlugin {
   import autoImport._
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
-    veracodeAppName := sbt.Keys.name.value
+    veracodeAppName := sbt.Keys.name.value,
   ) ++ allTasks
 
   private lazy val api: VeracodeApi = new VeracodeApiImpl(new VeracodeWrapperFactory(credentials))
-
-  private def identifyArtifact(artifacts: Map[Artifact, File]): File = {
-    artifacts.toList.map(_._2).filter(isValidJar(_)).head
-  }
-
-  private def isValidJar(file: File): Boolean = {
-    file.getName.endsWith(".jar") &&
-      !file.getName.endsWith("javadoc.jar") &&
-      !file.getName.endsWith("sources.jar")
-  }
 
   private val allTasks = Seq(
     veracodeResolveAppId := {
@@ -44,7 +36,7 @@ object VeracodePlugin extends AutoPlugin {
     veracodeSubmit := {
       System.out.println("veracodeSubmit")
       val appId = veracodeResolveAppId.value
-      val file = identifyArtifact(packagedArtifacts.value)
+      val file = AssemblyKeys.assembly.value
       System.out.println("Veracode artifact file: " + file.getCanonicalPath)
 
       if (api.isScanRunning(appId)) {
