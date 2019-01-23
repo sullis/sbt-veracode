@@ -8,6 +8,8 @@ object VeracodePlugin extends AutoPlugin {
   object autoImport {
     val veracodeAppName = settingKey[String]("Veracode app name")
 
+    val veracodeArtifact = taskKey[File]("Artifact to upload to Veracode")
+
     val veracodeResolveAppId = taskKey[String]("veracodeResolveAppId")
     val veracodeSubmit = taskKey[Unit]("veracodeSubmit")
   }
@@ -15,7 +17,8 @@ object VeracodePlugin extends AutoPlugin {
   import autoImport._
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
-    veracodeAppName := sbt.Keys.name.value
+    veracodeAppName := sbt.Keys.name.value,
+    veracodeArtifact := identifyArtifact(packagedArtifacts.value)
   ) ++ allTasks
 
   private lazy val api: VeracodeApi = new VeracodeApiImpl(new VeracodeWrapperFactory(credentials))
@@ -44,7 +47,7 @@ object VeracodePlugin extends AutoPlugin {
     veracodeSubmit := {
       System.out.println("veracodeSubmit")
       val appId = veracodeResolveAppId.value
-      val file = identifyArtifact(packagedArtifacts.value)
+      val file = veracodeArtifact.value
       System.out.println("Veracode artifact file: " + file.getCanonicalPath)
 
       if (api.isScanRunning(appId)) {
