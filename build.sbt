@@ -8,6 +8,8 @@ crossSbtVersions := List("1.2.8")
 
 enablePlugins(SbtPlugin, GitVersioning, GitBranchPrompt)
 
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.3.15")
+
 scriptedLaunchOpts := { scriptedLaunchOpts.value ++
   Seq("-Xmx1024M", "-XX:MaxPermSize=256M", "-Dplugin.version=" + version.value)
 }
