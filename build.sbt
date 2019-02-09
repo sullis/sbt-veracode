@@ -39,10 +39,7 @@ bintrayReleaseOnPublish := true
 
 licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 
-val awsSdkVersion = "2.3.5"
-
 libraryDependencies ++= Seq(
   "com.veracode.vosp.api.wrappers" % "vosp-api-wrappers-java" % "18.12.5.5",
-  "software.amazon.awssdk" % "kms" % awsSdkVersion,
   "org.scalatest" %% "scalatest" % "3.0.5" % Test
 )
