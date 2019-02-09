@@ -9,7 +9,7 @@ project/plugins.sbt
 ```
 resolvers += Resolver.bintrayIvyRepo("sullis", "sbt-plugins")
 
-addSbtPlugin("io.github.sullis" % "sbt-veracode" % "0.1.0")
+addSbtPlugin("io.github.sullis" % "sbt-veracode" % "0.1.1")
 ```
 
 build.sbt
