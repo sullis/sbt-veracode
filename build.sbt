@@ -41,5 +41,5 @@ licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html
 
 libraryDependencies ++= Seq(
   "com.veracode.vosp.api.wrappers" % "vosp-api-wrappers-java" % "18.12.5.5",
-  "org.scalatest" %% "scalatest" % "3.0.5" % Test
+  "org.scalatest" %% "scalatest" % "3.0.8" % Test
 )
