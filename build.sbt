@@ -4,6 +4,10 @@ name := "sbt-veracode"
 
 description := "SBT plugin for Veracode code analyzer"
 
+scalaVersion := "2.12.10"
+
+crossScalaVersions := Seq(scalaVersion.value, "2.13.1")
+
 crossSbtVersions := List("1.2.8")
 
 enablePlugins(SbtPlugin, GitVersioning, GitBranchPrompt)
